@@ -10,3 +10,6 @@ TAP_DANCE_ENABLE = yes
 CONSOLE_ENABLE = yes
 DYNAMIC_TAPPING_TERM_ENABLE = yes
 WPM_ENABLE = yes
+DEFERRED_EXEC_ENABLE = yes
+
+SRC += features/achordion.c
