@@ -70,7 +70,7 @@ enum {
 tap_dance_action_t tap_dance_actions[] = {
     // Tap one for Space, twice for Enter
     [TD_SPC_ENT] = ACTION_TAP_DANCE_DOUBLE(KC_SPC, KC_ENT)
-};
+}; 
 
 void keyboard_post_init_user(void) {
   // Customise these values to desired behaviour
@@ -90,16 +90,47 @@ enum layers {
     _OTHER
 };
 
+#define HOME_A LGUI_T(KC_A)
+#define HOME_S LALT_T(KC_S)
+#define HOME_D LCTL_T(KC_D)
+#define HOME_F LSFT_T(KC_F)
+#define HOME_J RSFT_T(KC_J)
+#define HOME_K RCTL_T(KC_K)
+#define HOME_L RALT_T(KC_L)
+#define HOME_QUOT RGUI_T(KC_QUOT)
+#define MEDIA_ESC LT(_MEDIA,KC_ESC)
+#define NAV_TAB LT(_NAVIGATION,KC_TAB)
+#define SYM_ENT LT(_SYMBOLS,KC_ENT)
+#define NUM_SPC LT(_NUMBER,KC_SPC)
+#define FUN_BSPC LT(_FUNCTION,KC_BSPC)
+
+uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t* record) {
+  // If you quickly hold a tap-hold key after tapping it, the tap action is
+  // repeated. Key repeating is useful e.g. for Vim navigation keys, but can
+  // lead to missed triggers in fast typing. Here, returning 0 means we
+  // instead want to "force hold" and disable key repeating.
+  switch (keycode) {
+    case HOME_J:
+    case HOME_K:
+    case HOME_L:
+    case FUN_BSPC:
+      return QUICK_TAP_TERM;  // Enable key repeating.
+    default:
+      return 0;  // Otherwise, force hold and disable key repeating.
+  }
+}
+
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     [_BASE] = LAYOUT_split_3x6_3(
   //,------------------------------------------------------------------------------------.                                         ,--------------------------------------------------------------------------------------.
           KC_NO,        KC_Q,         KC_W,         KC_E,         KC_R,         KC_T,                                                   KC_Y,        KC_U,          KC_I,        KC_O,            KC_P,          KC_NO,
   //|-------------+-------------+-------------+-------------+-------------+--------------|                                         |-------------+-------------+-------------+---------------+----------------+-------------|
-          KC_NO,    LGUI_T(KC_A), LALT_T(KC_S), LCTL_T(KC_D), LSFT_T(KC_F),     KC_G,                                                   KC_H,      RSFT_T(KC_J), RCTL_T(KC_K), RALT_T(KC_L),  RGUI_T(KC_QUOT),    KC_NO,
+          KC_NO,        HOME_A,     HOME_S,         HOME_D,       HOME_F,       KC_G,                                                   KC_H,        HOME_J,        HOME_K,      HOME_L,          HOME_QUOT,    KC_NO,
   //|-------------+-------------+-------------+-------------+-------------+--------------|                                         |-------------+-------------+-------------+---------------+----------------+-------------|
           KC_NO,    ALL_T(KC_Z),   MEH_T(KC_X),     KC_C,         KC_V,         KC_B,                                                   KC_N,        KC_M,         KC_COMM,    MEH_T(KC_DOT),   ALL_T(KC_SLSH),    KC_NO,
   //|-------------+-------------+-------------+-----------------+------------------------+-------------|     |---------------------+-------------------+---------------------+---------------+----------------+-------------|
-                                               LT(_MEDIA,KC_ESC), LT(_NAVIGATION,KC_TAB),   MO(_OTHER),        LT(_SYMBOLS,KC_ENT), LT(_NUMBER,KC_SPC), LT(_FUNCTION,KC_BSPC)
+                                                                MEDIA_ESC,      NAV_TAB,   MO(_OTHER),        SYM_ENT,    NUM_SPC,      FUN_BSPC
                                             //`--------------------------------------------------------'     `---------------------------------------------------------------'
 
   ),

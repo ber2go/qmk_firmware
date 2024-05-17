@@ -29,9 +29,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 // #define EE_HANDS
 
 //#define QUICK_TAP_TERM 0
-#define TAPPING_TERM 200
+#define TAPPING_TERM 175
 #define DYNAMIC_TAPPING_TERM_INCREMENT 50
 #define PERMISSIVE_HOLD
+#define QUICK_TAP_TERM_PER_KEY
 
 
 #ifdef RGBLIGHT_ENABLE
