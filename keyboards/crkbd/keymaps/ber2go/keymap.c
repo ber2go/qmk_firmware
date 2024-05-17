@@ -99,10 +99,17 @@ enum layers {
 #define HOME_L RALT_T(KC_L)
 #define HOME_QUOT RGUI_T(KC_QUOT)
 #define MEDIA_ESC LT(_MEDIA,KC_ESC)
+#define NAV_SPC LT(_NAVIGATION,KC_SPC)
 #define NAV_TAB LT(_NAVIGATION,KC_TAB)
+#define OTHER_TAB LT(_OTHER,KC_TAB)
 #define SYM_ENT LT(_SYMBOLS,KC_ENT)
 #define NUM_SPC LT(_NUMBER,KC_SPC)
+#define NUM_BSPC LT(_NUMBER,KC_BSPC)
 #define FUN_BSPC LT(_FUNCTION,KC_BSPC)
+#define FUN_DEL LT(_FUNCTION,KC_DEL)
+
+#define HYPR_Z HYPR(KC_Z)
+
 
 uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t* record) {
   // If you quickly hold a tap-hold key after tapping it, the tap action is
@@ -113,11 +120,32 @@ uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t* record) {
     case HOME_J:
     case HOME_K:
     case HOME_L:
-    case FUN_BSPC:
+    case NUM_BSPC:
       return QUICK_TAP_TERM;  // Enable key repeating.
     default:
       return 0;  // Otherwise, force hold and disable key repeating.
   }
+}
+
+bool achordion_chord(uint16_t tap_hold_keycode,
+                     keyrecord_t* tap_hold_record,
+                     uint16_t other_keycode,
+                     keyrecord_t* other_record) {
+  switch (tap_hold_keycode) {
+    case HYPR_Z:
+      if (other_keycode == KC_F) { return true; }
+      break;
+    case OTHER_TAB:
+      if (other_keycode == KC_Q || other_keycode == KC_W) { return true; }
+      break;
+  }
+
+  // Also allow same-hand holds when the other key is in the rows below the
+  // alphas. I need the `% (MATRIX_ROWS / 2)` because my keyboard is split.
+  if (other_record->event.key.row % (MATRIX_ROWS / 2) >= 4) { return true; }
+
+  // Otherwise, follow the opposite hands rule.
+  return achordion_opposite_hands(tap_hold_record, other_record);
 }
 
 
@@ -128,9 +156,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   //|-------------+-------------+-------------+-------------+-------------+--------------|                                         |-------------+-------------+-------------+---------------+----------------+-------------|
           KC_NO,        HOME_A,     HOME_S,         HOME_D,       HOME_F,       KC_G,                                                   KC_H,        HOME_J,        HOME_K,      HOME_L,          HOME_QUOT,    KC_NO,
   //|-------------+-------------+-------------+-------------+-------------+--------------|                                         |-------------+-------------+-------------+---------------+----------------+-------------|
-          KC_NO,    ALL_T(KC_Z),   MEH_T(KC_X),     KC_C,         KC_V,         KC_B,                                                   KC_N,        KC_M,         KC_COMM,    MEH_T(KC_DOT),   ALL_T(KC_SLSH),    KC_NO,
+          KC_NO,    HYPR_Z,   MEH_T(KC_X),     KC_C,         KC_V,         KC_B,                                                   KC_N,        KC_M,         KC_COMM,    MEH_T(KC_DOT),   ALL_T(KC_SLSH),    KC_NO,
   //|-------------+-------------+-------------+-----------------+------------------------+-------------|     |---------------------+-------------------+---------------------+---------------+----------------+-------------|
-                                                                MEDIA_ESC,      NAV_TAB,   MO(_OTHER),        SYM_ENT,    NUM_SPC,      FUN_BSPC
+                                                                MEDIA_ESC,      NAV_SPC,   OTHER_TAB,         SYM_ENT,    NUM_BSPC,      FUN_DEL
                                             //`--------------------------------------------------------'     `---------------------------------------------------------------'
 
   ),
@@ -197,7 +225,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [_OTHER] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-      XXXXXXX, QK_BOOT, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
+      XXXXXXX, QK_BOOT, QK_MAKE, XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       XXXXXXX, RGB_TOG, RGB_HUI, RGB_SAI, RGB_VAI, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
