@@ -108,7 +108,7 @@ enum layers {
 #define FUN_BSPC LT(_FUNCTION,KC_BSPC)
 #define FUN_DEL LT(_FUNCTION,KC_DEL)
 
-#define HYPR_Z HYPR(KC_Z)
+#define HYPR_Z ALL_T(KC_Z)
 
 
 uint16_t get_quick_tap_term(uint16_t keycode, keyrecord_t* record) {
@@ -138,8 +138,8 @@ bool achordion_chord(uint16_t tap_hold_keycode,
     case OTHER_TAB:
       if (other_keycode == KC_Q || other_keycode == KC_W) { return true; }
       break;
-  }
-
+  } 
+  
   // Also allow same-hand holds when the other key is in the rows below the
   // alphas. I need the `% (MATRIX_ROWS / 2)` because my keyboard is split.
   if (other_record->event.key.row % (MATRIX_ROWS / 2) >= 4) { return true; }
