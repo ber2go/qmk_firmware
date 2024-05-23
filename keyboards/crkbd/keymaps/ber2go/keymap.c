@@ -100,12 +100,9 @@ enum layers {
 #define HOME_QUOT RGUI_T(KC_QUOT)
 #define MEDIA_ESC LT(_MEDIA,KC_ESC)
 #define NAV_SPC LT(_NAVIGATION,KC_SPC)
-#define NAV_TAB LT(_NAVIGATION,KC_TAB)
 #define OTHER_TAB LT(_OTHER,KC_TAB)
 #define SYM_ENT LT(_SYMBOLS,KC_ENT)
-#define NUM_SPC LT(_NUMBER,KC_SPC)
 #define NUM_BSPC LT(_NUMBER,KC_BSPC)
-#define FUN_BSPC LT(_FUNCTION,KC_BSPC)
 #define FUN_DEL LT(_FUNCTION,KC_DEL)
 
 #define HYPR_Z ALL_T(KC_Z)
@@ -131,6 +128,7 @@ bool achordion_chord(uint16_t tap_hold_keycode,
                      keyrecord_t* tap_hold_record,
                      uint16_t other_keycode,
                      keyrecord_t* other_record) {
+  dprintln("Custom achordion_chord");
   switch (tap_hold_keycode) {
     case HYPR_Z:
       if (other_keycode == KC_F) { return true; }
@@ -142,10 +140,19 @@ bool achordion_chord(uint16_t tap_hold_keycode,
   
   // Also allow same-hand holds when the other key is in the rows below the
   // alphas. I need the `% (MATRIX_ROWS / 2)` because my keyboard is split.
-  if (other_record->event.key.row % (MATRIX_ROWS / 2) >= 4) { return true; }
+  // if (other_record->event.key.row % (MATRIX_ROWS / 2) >= 4) { return true; }
 
   // Otherwise, follow the opposite hands rule.
   return achordion_opposite_hands(tap_hold_record, other_record);
+}
+
+uint16_t achordion_timeout(uint16_t tap_hold_keycode) {
+  switch (tap_hold_keycode) {
+    case HYPR_Z:
+      return 0;
+  }
+
+  return 800;
 }
 
 
