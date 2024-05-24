@@ -133,6 +133,8 @@ bool achordion_chord(uint16_t tap_hold_keycode,
     case HYPR_Z:
       if (other_keycode == KC_F) { return true; }
       break;
+    case HOME_A:
+      if (other_keycode == OTHER_TAB || other_keycode == NAV_SPC) { return true; }
     case OTHER_TAB:
       if (other_keycode == KC_Q || other_keycode == KC_W) { return true; }
       break;
