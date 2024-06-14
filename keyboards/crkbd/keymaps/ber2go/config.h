@@ -33,6 +33,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define DYNAMIC_TAPPING_TERM_INCREMENT 50
 #define PERMISSIVE_HOLD
 #define QUICK_TAP_TERM_PER_KEY
+#define ACHORDION_STREAK
 
 #ifdef RGBLIGHT_ENABLE
     #define RGBLIGHT_EFFECT_BREATHING
