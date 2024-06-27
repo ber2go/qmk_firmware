@@ -21,13 +21,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 bool process_record_user(uint16_t keycode, keyrecord_t* record) {
   if (!process_achordion(keycode, record)) { return false; }
-  
+
   switch(keycode) {
 
   case KC_BSPC: {  // Backspace with exponential repeating.
     // Initial delay before the first repeat.
     static const uint8_t INIT_DELAY_MS = 250;
-    
+
     // This array customizes the rate at which the Backspace key
     // repeats. The delay after the ith repeat is REP_DELAY_MS[i].
     // Values must be between 1 and 255.
@@ -36,7 +36,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
         20, 19, 18, 17, 16, 15, 15, 14, 14, 13, 13, 12, 12, 11, 11, 10};
     static deferred_token token = INVALID_DEFERRED_TOKEN;
     static uint8_t rep_count = 0;
-    
+
     if (!record->event.pressed) {  // Backspace released: stop repeating.
         cancel_deferred_exec(token);
         token = INVALID_DEFERRED_TOKEN;
@@ -47,10 +47,10 @@ bool process_record_user(uint16_t keycode, keyrecord_t* record) {
         uint32_t bspc_callback(uint32_t trigger_time, void* cb_arg) {
             tap_code(KC_BSPC);
             if (rep_count < sizeof(REP_DELAY_MS)) { ++rep_count; }
-            return pgm_read_byte(REP_DELAY_MS - 1 + rep_count); 
+            return pgm_read_byte(REP_DELAY_MS - 1 + rep_count);
         }
 
-        token = defer_exec(INIT_DELAY_MS, bspc_callback, NULL); 
+        token = defer_exec(INIT_DELAY_MS, bspc_callback, NULL);
     }
   } return false;  // Skip normal handling.
   }
@@ -70,7 +70,7 @@ enum {
 tap_dance_action_t tap_dance_actions[] = {
     // Tap one for Space, twice for Enter
     [TD_SPC_ENT] = ACTION_TAP_DANCE_DOUBLE(KC_SPC, KC_ENT)
-}; 
+};
 
 void keyboard_post_init_user(void) {
   // Customise these values to desired behaviour
@@ -96,7 +96,7 @@ enum layers {
 #define HOME_F LSFT_T(KC_F)
 #define HOME_J RSFT_T(KC_J)
 #define HOME_K RCTL_T(KC_K)
-#define HOME_L RALT_T(KC_L)
+#define HOME_L LALT_T(KC_L)
 #define HOME_QUOT RGUI_T(KC_QUOT)
 #define MEDIA_ESC LT(_MEDIA,KC_ESC)
 #define NAV_SPC LT(_NAVIGATION,KC_SPC)
@@ -138,8 +138,8 @@ bool achordion_chord(uint16_t tap_hold_keycode,
     case OTHER_TAB:
       if (other_keycode == KC_Q || other_keycode == KC_W) { return true; }
       break;
-  } 
-  
+  }
+
   // Also allow same-hand holds when the other key is in the rows below the
   // alphas. I need the `% (MATRIX_ROWS / 2)` because my keyboard is split.
   // if (other_record->event.key.row % (MATRIX_ROWS / 2) >= 4) { return true; }
@@ -167,7 +167,7 @@ uint16_t achordion_streak_chord_timeout(
   uint8_t mod = mod_config(QK_MOD_TAP_GET_MODS(tap_hold_keycode));
   if ((mod & MOD_LSFT) != 0) {
     return 100;  // A shorter streak timeout for Shift mod-tap keys.
-  } 
+  }
 
   return 200;  // Default of 100 ms.
 }
@@ -210,7 +210,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [_NAVIGATION] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-      KC_TRNS, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                     
+      KC_TRNS, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,                     XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       KC_TRNS, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,                      KC_LEFT, KC_DOWN,  KC_UP, KC_RIGHT, XXXXXXX, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
@@ -222,11 +222,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [_NUMBER] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-      KC_TRNS, KC_LBRC, KC_7,     KC_8,   KC_9,   KC_RBRC,                       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, 
+      KC_TRNS, KC_LBRC, KC_7,     KC_8,   KC_9,   KC_RBRC,                       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       KC_TRNS, KC_SCLN, KC_4,     KC_5,   KC_6,   KC_EQL,                        XXXXXXX, KC_RSFT, KC_RCTL, KC_RALT, KC_RGUI, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      KC_TRNS, KC_GRV,  KC_1,     KC_2,   KC_3,   KC_BSLS,                       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, 
+      KC_TRNS, KC_GRV,  KC_1,     KC_2,   KC_3,   KC_BSLS,                       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                           KC_TRNS, KC_0,   KC_MINUS,   KC_TRNS, KC_TRNS, KC_TRNS
                                       //`--------------------------'  `--------------------------'
@@ -234,11 +234,11 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [_SYMBOLS] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-      KC_TRNS, S(KC_LBRC), KC_AMPR, KC_ASTR, KC_LPRN, S(KC_RBRC),                XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, 
+      KC_TRNS, S(KC_LBRC), KC_AMPR, KC_ASTR, KC_LPRN, S(KC_RBRC),                XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       KC_TRNS, KC_COLON, KC_DLR, KC_PERC, KC_CIRC, KC_PLUS,                       XXXXXXX, KC_RSFT, KC_RCTL, KC_RALT, KC_RGUI, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      KC_TRNS, KC_TILD, KC_EXLM, KC_AT,  KC_HASH,  KC_PIPE,                       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, 
+      KC_TRNS, KC_TILD, KC_EXLM, KC_AT,  KC_HASH,  KC_PIPE,                       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                          KC_LPRN, KC_RPRN, KC_UNDS,    KC_TRNS, KC_TRNS, KC_TRNS
                                       //`--------------------------'  `--------------------------'
@@ -246,23 +246,23 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
     [_FUNCTION] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-      KC_TRNS, KC_F12,  KC_F7,   KC_F8,   KC_F9,   XXXXXXX,                       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, 
+      KC_TRNS, KC_F12,  KC_F7,   KC_F8,   KC_F9,   XXXXXXX,                       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
       KC_TRNS, KC_F11,  KC_F4,   KC_F5,   KC_F6,   XXXXXXX,                         XXXXXXX, KC_RSFT, KC_RCTL, KC_RALT, KC_RGUI, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      KC_TRNS, KC_F10,  KC_F1,   KC_F2,   KC_F3,   XXXXXXX,                       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, 
+      KC_TRNS, KC_F10,  KC_F1,   KC_F2,   KC_F3,   XXXXXXX,                       XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                          KC_TRNS, KC_TRNS, KC_TRNS,   KC_TRNS, KC_TRNS, KC_TRNS   
+                                          KC_TRNS, KC_TRNS, KC_TRNS,   KC_TRNS, KC_TRNS, KC_TRNS
                                       //`--------------------------'  `--------------------------'
   ),
 
     [_MEDIA] = LAYOUT_split_3x6_3(
   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-      KC_TRNS, XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, 
+      KC_TRNS, XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      KC_TRNS, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,                       KC_MPRV, KC_VOLD, KC_VOLU, KC_MNXT, XXXXXXX, XXXXXXX, 
+      KC_TRNS, KC_LGUI, KC_LALT, KC_LCTL, KC_LSFT, XXXXXXX,                       KC_MPRV, KC_VOLD, KC_VOLU, KC_MNXT, XXXXXXX, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      KC_TRNS, XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, 
+      KC_TRNS, XXXXXXX, XXXXXXX,  XXXXXXX, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,
   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                           KC_TRNS, KC_TRNS, KC_TRNS,    KC_MSTP, KC_MPLY, KC_MUTE
                                       //`--------------------------'  `--------------------------'
